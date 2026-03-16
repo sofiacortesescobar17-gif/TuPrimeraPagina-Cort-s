@@ -1,0 +1,61 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Categorías — MiBlog{% endblock %}
+{% block nav_categorias %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-tags me-2"></i>Categorías</h1>
+        <p>Organizá el contenido del blog</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'crear_categoria' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Nueva Categoría
+        </a>
+    </div>
+
+    {% if categorias %}
+    <div class="row g-4">
+        {% for cat in categorias %}
+        <div class="col-md-4">
+            <div class="card h-100" style="border-top: 4px solid {{ cat.color }};">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div style="width:16px; height:16px; border-radius:50%;
+                                    background:{{ cat.color }}; margin-right:10px;"></div>
+                        <h5 class="card-title mb-0">{{ cat.nombre }}</h5>
+                    </div>
+                    {% if cat.descripcion %}
+                    <p class="card-text text-muted" style="font-size:0.9rem;">{{ cat.descripcion }}</p>
+                    {% endif %}
+                    <div class="mt-2">
+                        <span class="badge bg-secondary">
+                            {{ cat.posts.count }} post{{ cat.posts.count|pluralize:"s" }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent d-flex gap-2">
+                    <a href="{% url 'editar_categoria' cat.pk %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                    <a href="{% url 'eliminar_categoria' cat.pk %}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-trash me-1"></i>Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-tags fa-3x text-muted mb-3 d-block"></i>
+        <p class="text-muted">No hay categorías creadas todavía.</p>
+        <a href="{% url 'crear_categoria' %}" class="btn btn-primary">Crear la primera</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

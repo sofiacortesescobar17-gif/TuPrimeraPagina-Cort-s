@@ -1,0 +1,133 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Inicio — MiBlog{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<div class="page-header">
+    <div class="container">
+        <h1 class="display-4">Mi Blog <span style="color: var(--gold);">Django</span></h1>
+        <p class="lead">Proyecto Web con patrón MVT &bull; Herencia de Plantillas &bull; 3 Modelos</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- ESTADÍSTICAS -->
+    <div class="row g-3 mb-5">
+        <div class="col-4">
+            <div class="stat-box">
+                <div class="number">{{ total_posts }}</div>
+                <div class="label">Posts publicados</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="stat-box">
+                <div class="number">{{ total_autores }}</div>
+                <div class="label">Autores</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="stat-box">
+                <div class="number">{{ total_categorias }}</div>
+                <div class="label">Categorías</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POSTS RECIENTES -->
+    <div class="d-flex justify-content-between align-items-baseline mb-4">
+        <h2 style="font-family:'Playfair Display',serif; font-weight:900;">Posts Recientes</h2>
+        <a href="{% url 'lista_posts' %}" class="btn btn-outline-secondary btn-sm">Ver todos →</a>
+    </div>
+
+    {% if posts %}
+    <div class="row g-4 mb-5">
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    {% if post.categoria %}
+                    <span class="badge-categoria mb-2"
+                          style="background-color: {{ post.categoria.color }}">
+                        {{ post.categoria.nombre }}
+                    </span>
+                    {% endif %}
+                    <h5 class="card-title">{{ post.titulo }}</h5>
+                    <p class="card-text text-muted flex-grow-1" style="font-size:0.9rem;">
+                        {% if post.resumen %}
+                            {{ post.resumen|truncatechars:120 }}
+                        {% else %}
+                            {{ post.contenido|truncatechars:120 }}
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>{{ post.autor }}
+                        </small>
+                        <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary btn-sm">Leer →</a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent" style="font-size:0.8rem; color: var(--muted);">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    {{ post.fecha_creacion|date:"d M Y" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-newspaper fa-3x text-muted mb-3 d-block"></i>
+        <p class="text-muted">Aún no hay posts publicados.</p>
+        <a href="{% url 'crear_post' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Crear el primer post
+        </a>
+    </div>
+    {% endif %}
+
+    <hr class="divider">
+
+    <!-- ACCIONES RÁPIDAS -->
+    <h2 style="font-family:'Playfair Display',serif; font-weight:900;" class="mb-4">Acciones Rápidas</h2>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <a href="{% url 'crear_post' %}" class="text-decoration-none">
+                <div class="card text-center p-3" style="border-top: 3px solid var(--accent);">
+                    <i class="fas fa-file-alt fa-2x text-accent mb-2"></i>
+                    <strong>Nuevo Post</strong>
+                    <div class="text-muted" style="font-size:0.8rem;">Escribir un artículo</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'crear_autor' %}" class="text-decoration-none">
+                <div class="card text-center p-3" style="border-top: 3px solid var(--gold);">
+                    <i class="fas fa-user-plus fa-2x text-gold mb-2"></i>
+                    <strong>Nuevo Autor</strong>
+                    <div class="text-muted" style="font-size:0.8rem;">Registrar un autor</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'crear_categoria' %}" class="text-decoration-none">
+                <div class="card text-center p-3" style="border-top: 3px solid #6366f1;">
+                    <i class="fas fa-tag fa-2x mb-2" style="color:#6366f1;"></i>
+                    <strong>Nueva Categoría</strong>
+                    <div class="text-muted" style="font-size:0.8rem;">Organizar el contenido</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'buscar_post' %}" class="text-decoration-none">
+                <div class="card text-center p-3" style="border-top: 3px solid #198754;">
+                    <i class="fas fa-search fa-2x mb-2" style="color:#198754;"></i>
+                    <strong>Buscar Posts</strong>
+                    <div class="text-muted" style="font-size:0.8rem;">Buscar en la BD</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

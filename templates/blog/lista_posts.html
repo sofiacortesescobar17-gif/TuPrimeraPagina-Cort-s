@@ -1,0 +1,83 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Posts — MiBlog{% endblock %}
+{% block nav_posts %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-newspaper me-2"></i>Posts</h1>
+        <p>Todos los artículos publicados</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Filtro por categoría -->
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'lista_posts' %}"
+               class="btn btn-sm {% if not categoria_activa %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                Todas
+            </a>
+            {% for cat in categorias %}
+            <a href="?categoria={{ cat.pk }}"
+               class="btn btn-sm"
+               style="background-color: {% if categoria_activa == cat.pk|stringformat:'s' %}{{ cat.color }}{% else %}transparent{% endif %};
+                      border: 1px solid {{ cat.color }};
+                      color: {% if categoria_activa == cat.pk|stringformat:'s' %}white{% else %}{{ cat.color }}{% endif %};
+                      border-radius: 0;">
+                {{ cat.nombre }}
+            </a>
+            {% endfor %}
+        </div>
+        <a href="{% url 'crear_post' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Nuevo Post
+        </a>
+    </div>
+
+    {% if posts %}
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    {% if post.categoria %}
+                    <span class="badge-categoria mb-2"
+                          style="background-color: {{ post.categoria.color }}">
+                        {{ post.categoria.nombre }}
+                    </span>
+                    {% endif %}
+                    <h5 class="card-title">{{ post.titulo }}</h5>
+                    <p class="card-text text-muted flex-grow-1" style="font-size:0.9rem;">
+                        {% if post.resumen %}{{ post.resumen|truncatechars:100 }}
+                        {% else %}{{ post.contenido|truncatechars:100 }}{% endif %}
+                    </p>
+                    <div class="mt-3 d-flex gap-2">
+                        <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary btn-sm">Leer</a>
+                        <a href="{% url 'editar_post' post.pk %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'eliminar_post' post.pk %}" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent" style="font-size:0.8rem; color: var(--muted);">
+                    <i class="fas fa-user me-1"></i>{{ post.autor }}
+                    &bull;
+                    {{ post.fecha_creacion|date:"d/m/Y" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+        <p class="text-muted">No hay posts para mostrar.</p>
+        <a href="{% url 'crear_post' %}" class="btn btn-primary">Crear el primero</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
