@@ -1,4 +1,4 @@
-# TuPrimeraPagina+cortés
+# TuPrimeraPagina+cortes
 
 
 Proyecto Web en Django con patrón MVT — Blog de artículos con autores y categorías.
